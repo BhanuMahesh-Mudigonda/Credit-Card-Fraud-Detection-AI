@@ -1,27 +1,89 @@
-.glass{
+.hero-section{
 
-background:rgba(255,255,255,.05);
+padding:70px;
 
-backdrop-filter:blur(20px);
+border-radius:30px;
 
-border-radius:20px;
+background:linear-gradient(135deg,#081223,#101b35);
 
-border:1px solid rgba(255,255,255,.1);
+border:1px solid rgba(255,255,255,.08);
 
-padding:20px;
+box-shadow:0 0 50px rgba(0,180,255,.25);
 
-box-shadow:0 8px 30px rgba(0,0,0,.3);
+margin-bottom:40px;
 
-}
-
-.glow{
-
-box-shadow:0 0 35px rgba(59,130,246,.45);
+animation:fadeUp 1s ease;
 
 }
 
-.round{
+.status-pill{
 
-border-radius:25px;
+display:inline-block;
+
+padding:10px 18px;
+
+border-radius:50px;
+
+background:#0f2f25;
+
+color:#53ff9d;
+
+font-weight:700;
+
+margin-bottom:20px;
+
+}
+
+.hero-title{
+
+font-size:64px;
+
+font-weight:900;
+
+color:white;
+
+margin-bottom:20px;
+
+}
+
+.gradient-text{
+
+background:linear-gradient(90deg,#4fd8ff,#7a6cff);
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+}
+
+.hero-description{
+
+font-size:20px;
+
+color:#b8c7df;
+
+max-width:800px;
+
+line-height:1.7;
+
+}
+
+@keyframes fadeUp{
+
+from{
+
+opacity:0;
+
+transform:translateY(50px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
 
 }

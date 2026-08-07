@@ -1,103 +1,53 @@
 import streamlit as st
-from utils.theme import load_css
 
-# -----------------------------
-# Page Configuration
-# -----------------------------
+# 1. Page Configuration (Wide Layout, Hides sidebar by default)
 st.set_page_config(
-    page_title="AEGIS AI",
+    page_title="AEGIS AI | Enterprise Fraud Intelligence Platform",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# -----------------------------
-# Load Premium CSS
-# -----------------------------
+# 2. Inject Custom Cyber SOC CSS
+from utils.theme import load_css
 load_css()
 
-# -----------------------------
-# Sidebar
-# -----------------------------
-with st.sidebar:
+# 3. Render 8-Layer Animated Ambient Cyber Background
+from components.background import render_ambient_background
+render_ambient_background()
 
-    st.markdown("# 🛡️ AEGIS AI")
+# 4. Import Navigation Component & Page Views
+from components.navbar import render_top_navbar
+from views.home_view import render_home_view
+from views.dataset_view import render_dataset_view
+from views.prediction_view import render_prediction_view
+from views.performance_view import render_performance_view
+from views.explain_ai_view import render_explain_ai_view
+from views.dashboard_view import render_dashboard_view
+from views.reports_view import render_reports_view
+from views.about_view import render_about_view
 
-    st.caption("Enterprise Fraud Intelligence Platform")
+# 5. Render Sticky Glass Top Navigation Bar
+render_top_navbar()
 
-    st.divider()
+# 6. Route to Active Page View (Instantaneous Rendering)
+current_page = st.session_state.get("current_page", "Home")
 
-    st.success("🟢 AI ONLINE")
-
-    st.metric("Accuracy","99.95%")
-
-    st.metric("Fraud Cases","492")
-
-    st.metric("Transactions","284,807")
-
-    st.divider()
-
-    st.info("""
-Use the pages below to navigate.
-
-🏠 Home
-
-📊 Dataset
-
-🤖 Prediction
-
-📈 Performance
-
-🧠 Explain AI
-
-📡 Live Dashboard
-
-📄 Reports
-
-ℹ️ About
-""")
-
-# -----------------------------
-# Main Dashboard
-# -----------------------------
-
-st.title("🛡️ AEGIS AI")
-
-st.subheader("Enterprise Fraud Intelligence Platform")
-
-st.write("")
-
-c1,c2,c3,c4=st.columns(4)
-
-with c1:
-    st.metric("Transactions","284,807","+18%")
-
-with c2:
-    st.metric("Fraud Alerts","492","-2%")
-
-with c3:
-    st.metric("Accuracy","99.95%","+0.3%")
-
-with c4:
-    st.metric("AI Status","ONLINE","🟢")
-
-st.divider()
-
-st.markdown("""
-### 🚀 Welcome
-
-AEGIS AI is an enterprise-grade credit card fraud detection platform built
-using Machine Learning and Streamlit.
-
-Navigate through the sidebar to explore:
-
-- 📊 Dataset Analytics
-- 🤖 AI Prediction
-- 📈 Performance Dashboard
-- 🧠 Explain AI
-- 📡 Live Monitoring
-- 📄 Reports
-- ℹ️ About
-""")
-
-st.success("✔ Premium Theme Loaded Successfully")
+if current_page == "Home":
+    render_home_view()
+elif current_page == "Dataset":
+    render_dataset_view()
+elif current_page == "Prediction":
+    render_prediction_view()
+elif current_page == "Performance":
+    render_performance_view()
+elif current_page == "Explain AI":
+    render_explain_ai_view()
+elif current_page == "Dashboard":
+    render_dashboard_view()
+elif current_page == "Reports":
+    render_reports_view()
+elif current_page == "About":
+    render_about_view()
+else:
+    render_home_view()
