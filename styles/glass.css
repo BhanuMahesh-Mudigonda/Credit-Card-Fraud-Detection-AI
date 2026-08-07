@@ -1,0 +1,27 @@
+.glass{
+
+background:rgba(255,255,255,.05);
+
+backdrop-filter:blur(20px);
+
+border-radius:20px;
+
+border:1px solid rgba(255,255,255,.1);
+
+padding:20px;
+
+box-shadow:0 8px 30px rgba(0,0,0,.3);
+
+}
+
+.glow{
+
+box-shadow:0 0 35px rgba(59,130,246,.45);
+
+}
+
+.round{
+
+border-radius:25px;
+
+}

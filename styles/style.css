@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+html,
+body,
+[class*="css"]{
+    font-family:'Inter',sans-serif;
+}
+
+.stApp{
+    background:
+    radial-gradient(circle at top left,#1f3c88 0%,transparent 40%),
+    radial-gradient(circle at bottom right,#5b21b6 0%,transparent 40%),
+    #090b14;
+    color:white;
+}
+
+/* Hide Streamlit Header */
+
+header{
+    visibility:hidden;
+}
+
+/* Hide Footer */
+
+footer{
+    visibility:hidden;
+}
+
+/* Sidebar */
+
+section[data-testid="stSidebar"]{
+
+background:#0d1224;
+
+border-right:1px solid rgba(255,255,255,.08);
+
+}
+
+/* Cards */
+
+.ai-card{
+
+background:rgba(255,255,255,.06);
+
+border:1px solid rgba(255,255,255,.12);
+
+backdrop-filter:blur(18px);
+
+padding:24px;
+
+border-radius:22px;
+
+box-shadow:0 10px 35px rgba(0,0,0,.35);
+
+transition:.35s;
+
+margin-bottom:18px;
+
+}
+
+.ai-card:hover{
+
+transform:translateY(-8px);
+
+border:1px solid #3b82f6;
+
+box-shadow:0 20px 50px rgba(59,130,246,.35);
+
+}
+
+/* Panel */
+
+.panel{
+
+background:rgba(255,255,255,.05);
+
+padding:25px;
+
+border-radius:20px;
+
+border:1px solid rgba(255,255,255,.08);
+
+margin-top:20px;
+
+}
+
+/* Titles */
+
+h1{
+
+font-size:52px!important;
+
+font-weight:800!important;
+
+}
+
+h2{
+
+font-weight:700!important;
+
+}
+
+h3{
+
+font-weight:700!important;
+
+}
+
+/* Metric */
+
+div[data-testid="metric-container"]{
+
+background:rgba(255,255,255,.06);
+
+border-radius:18px;
+
+padding:20px;
+
+border:1px solid rgba(255,255,255,.08);
+
+}
+
+/* Buttons */
+
+.stButton>button{
+
+width:100%;
+
+background:linear-gradient(90deg,#2563eb,#7c3aed);
+
+border:none;
+
+color:white;
+
+font-weight:700;
+
+padding:14px;
+
+border-radius:14px;
+
+transition:.3s;
+
+}
+
+.stButton>button:hover{
+
+transform:scale(1.03);
+
+box-shadow:0 0 30px #2563eb;
+
+}
+
+/* Tables */
+
+table{
+
+border-radius:15px;
+
+overflow:hidden;
+
+}
+
+/* Success */
+
+.stAlert{
+
+border-radius:16px;
+
+}
+
+/* Divider */
+
+hr{
+
+border:.5px solid rgba(255,255,255,.08);
+
+}
