@@ -1,174 +1,464 @@
 import streamlit as st
 
-st.title("🛡️ AI FRAUD COMMAND CENTER")
-st.caption("Enterprise Fraud Intelligence Platform")
+st.set_page_config(layout="wide")
 
-st.markdown("---")
+st.markdown("""
+<style>
 
-st.markdown(
-"""
+.stApp{
+background:
+radial-gradient(circle at 20% 20%,rgba(0,183,255,.18),transparent 25%),
+radial-gradient(circle at 80% 30%,rgba(111,66,255,.15),transparent 25%),
+linear-gradient(135deg,#040814,#08101d,#050b16);
+overflow:hidden;
+}
+
+.hero{
+position:relative;
+height:92vh;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:30px;
+overflow:hidden;
+background:rgba(255,255,255,.03);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.08);
+}
+
+.hero::before{
+content:"";
+position:absolute;
+width:900px;
+height:900px;
+border-radius:50%;
+background:
+radial-gradient(circle,
+rgba(0,183,255,.28),
+transparent 70%);
+animation:pulse 8s infinite;
+}
+
+.hero::after{
+content:"";
+position:absolute;
+width:500px;
+height:500px;
+border-radius:50%;
+border:2px solid rgba(0,183,255,.25);
+animation:rotate 20s linear infinite;
+}
+
+.card{
+position:absolute;
+width:360px;
+height:220px;
+border-radius:25px;
+background:linear-gradient(135deg,#13203b,#1b2f55);
+box-shadow:0 0 60px rgba(0,183,255,.25);
+transform:rotate(-10deg);
+animation:float 6s ease-in-out infinite;
+padding:30px;
+color:white;
+}
+
+.card h1{
+font-size:28px;
+margin:0;
+}
+
+.card p{
+font-size:18px;
+opacity:.8;
+}
+
+.scan{
+position:absolute;
+width:420px;
+height:4px;
+background:#00d4ff;
+box-shadow:0 0 25px #00d4ff;
+animation:scan 4s infinite;
+}
+
+.title{
+position:absolute;
+bottom:70px;
+text-align:center;
+}
+
+.title h1{
+font-size:72px;
+margin:0;
+color:white;
+}
+
+.title p{
+font-size:22px;
+color:#bcd8ff;
+}
+
+@keyframes rotate{
+100%{transform:rotate(360deg);}
+}
+
+@keyframes pulse{
+50%{
+transform:scale(1.15);
+}
+}
+
+@keyframes float{
+50%{
+transform:translateY(-20px) rotate(-10deg);
+}
+}
+
+@keyframes scan{
+0%{top:20%;}
+100%{top:75%;}
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
 <div class="hero">
 
-<div class="live">SYSTEM ONLINE</div>
+<div class="card">
+
+<h1>💳 CREDIT CARD</h1>
 
 <br>
 
-<h1 class="hero-title">
-Protect Every Transaction
-</h1>
+<p>•••• •••• •••• 2458</p>
 
-<p class="hero-sub">
-AI-powered real-time fraud detection platform built using Machine Learning.
-Monitor transactions, detect suspicious activity and visualize insights
-through an enterprise dashboard.
-</p>
+<br>
+
+<p>LIVE AI MONITORING</p>
 
 </div>
-""",
-unsafe_allow_html=True
-)
 
-st.write("")
+<div class="scan"></div>
 
-col1, col2, col3, col4 = st.columns(4)
+<div class="title">
+
+<h1>AEGIS AI</h1>
+
+<p>Enterprise Fraud Intelligence Platform</p>
+
+</div>
+
+</div>
+""", unsafe_allow_html=True)
+st.markdown("---")
+
+st.markdown("""
+<h2 style='text-align:center;color:#00d4ff;'>
+⚡ LIVE AI DEFENSE GRID
+</h2>
+<p style='text-align:center;color:#BFC9D9;'>
+Every transaction is analysed by Artificial Intelligence before approval.
+</p>
+""", unsafe_allow_html=True)
+
+col1,col2,col3,col4 = st.columns(4)
 
 with col1:
-    st.metric("Transactions", "284,807", "+18%")
+    st.metric("💳 Transactions","284,807","+18%")
 
 with col2:
-    st.metric("Fraud Cases", "492", "-2%")
+    st.metric("🚨 Frauds","492","-2%")
 
 with col3:
-    st.metric("Accuracy", "99.95%", "+0.3%")
+    st.metric("🎯 Accuracy","99.95%","+0.3%")
 
 with col4:
-    st.metric("Status", "LIVE", "🟢")
+    st.metric("⚡ Status","ONLINE","🟢")
 
-st.write("")
-st.markdown("## 📊 AI Monitoring Dashboard")
+st.markdown("<br>",unsafe_allow_html=True)
 
-left, right = st.columns([2,1])
+left,right=st.columns([2,1])
 
 with left:
 
-    st.markdown(
-    """
-    <div class="panel">
+    st.markdown("""
+<div class="network-box">
 
-    <h3>🧠 AI Security Overview</h3>
+<h2>🧠 AI Decision Pipeline</h2>
 
-    <p>
-    The AI engine continuously analyzes transaction behaviour,
-    identifies suspicious activities and estimates fraud probability
-    using trained machine learning models.
-    </p>
+<br>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-    )
+💳 Transaction
 
-    st.progress(98)
+⬇
 
-    st.success("AI Model Health : Excellent")
+📊 Feature Engineering
+
+⬇
+
+🤖 Random Forest
+
+⬇
+
+🚨 Fraud Score
+
+⬇
+
+✅ Final Decision
+
+</div>
+""",unsafe_allow_html=True)
 
 with right:
 
-    st.markdown(
-    """
-    <div class="panel">
+    st.markdown("""
+<div class="status-box">
 
-    <h3>⚡ Live System</h3>
+<h3>🟢 SYSTEM STATUS</h3>
 
-    ✅ Prediction Engine
+<hr>
 
-    <br><br>
+✔ AI Engine
 
-    ✅ Dataset Connected
+<br>
 
-    <br><br>
+✔ Database Connected
 
-    ✅ Model Loaded
+<br>
 
-    <br><br>
+✔ Prediction Ready
 
-    ✅ Ready for Detection
+<br>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-    )
+✔ Explain AI Enabled
 
-st.write("")
+<br>
 
-st.markdown("## 📈 Platform Highlights")
+✔ Monitoring Live
 
-a,b,c = st.columns(3)
+</div>
+""",unsafe_allow_html=True)
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
-with a:
+st.markdown("""
+<h2 style="text-align:center;color:#00d9ff;">
+🌍 GLOBAL FRAUD MONITOR
+</h2>
+<p style="text-align:center;color:#9db7d5;">
+Live AI surveillance across worldwide financial transactions.
+</p>
+""", unsafe_allow_html=True)
 
-    st.markdown(
-    """
-    <div class="ai-card">
+col1, col2 = st.columns([3,2])
 
-    <h3>🤖 Machine Learning</h3>
+with col1:
 
-    Logistic Regression
+    st.markdown("""
+<div class="world-map">
 
-    Decision Tree
+<div class="pulse p1"></div>
+<div class="pulse p2"></div>
+<div class="pulse p3"></div>
+<div class="pulse p4"></div>
+<div class="pulse p5"></div>
 
-    Random Forest
+<div class="line l1"></div>
+<div class="line l2"></div>
+<div class="line l3"></div>
 
-    XGBoost
+<h2 class="center-ai">🛡️ AEGIS AI</h2>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-    )
+</div>
+""", unsafe_allow_html=True)
 
-with b:
+with col2:
 
-    st.markdown(
-    """
-    <div class="ai-card">
+    st.markdown("""
+<div class="feed-box">
 
-    <h3>💳 Dataset</h3>
+<h3>⚡ LIVE TRANSACTIONS</h3>
 
-    284,807 Transactions
+<hr>
 
-    492 Fraud Cases
+🇮🇳 Hyderabad
 
-    30 Features
+₹12,450
 
-    Highly Imbalanced Dataset
+✅ Approved
 
-    </div>
-    """,
-    unsafe_allow_html=True
-    )
+<br><br>
 
-with c:
+🇺🇸 New York
 
-    st.markdown(
-    """
-    <div class="ai-card">
+₹95,800
 
-    <h3>🚀 Performance</h3>
+🚨 Blocked
 
-    Accuracy : 99.95%
+<br><br>
 
-    Precision : High
+🇬🇧 London
 
-    Recall : Excellent
+₹4,500
 
-    F1 Score : Strong
+✅ Approved
 
-    </div>
-    """,
-    unsafe_allow_html=True
-    )
+<br><br>
 
-st.write("")
-st.divider()
+🇸🇬 Singapore
 
-st.info("💡 Navigate through Dataset, Prediction, Performance and About pages from the sidebar.")
+₹38,900
+
+🚨 Review
+
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+st.success("🌐 AI Network synchronized across global transaction nodes.")
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+st.markdown("""
+<h2 style="text-align:center;color:#00d9ff;">
+💳 AI CREDIT CARD SCANNER
+</h2>
+
+<p style="text-align:center;color:#A8B6D5;">
+Every transaction is scanned before approval using Artificial Intelligence.
+</p>
+""", unsafe_allow_html=True)
+
+left, right = st.columns([3,2])
+
+with left:
+
+    st.markdown("""
+<div class="scanner-container">
+
+<div class="scanner-ring ring1"></div>
+<div class="scanner-ring ring2"></div>
+<div class="scanner-ring ring3"></div>
+
+<div class="credit-card">
+
+<div class="chip"></div>
+
+<h2>AEGIS BANK</h2>
+
+<br><br>
+
+<h3>•••• •••• •••• 2458</h3>
+
+<p>BHANU MAHESH</p>
+
+</div>
+
+<div class="laser"></div>
+
+</div>
+""", unsafe_allow_html=True)
+
+with right:
+
+    st.markdown("""
+<div class="scan-panel">
+
+<h2>🧠 AI Scan Result</h2>
+
+<hr>
+
+✔ Card Verified
+
+<br><br>
+
+✔ Behaviour Analysed
+
+<br><br>
+
+✔ Device Trusted
+
+<br><br>
+
+✔ Risk Score : 2%
+
+<br><br>
+
+<h1 style="color:#3CFF8E;">SAFE</h1>
+
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+st.button("🚀 START AI ANALYSIS", use_container_width=True)
+st.markdown("<br><br>", unsafe_allow_html=True)
+
+st.markdown("""
+<h2 style="text-align:center;color:#00d9ff;">
+⚡ AI COMMAND CENTER
+</h2>
+
+<p style="text-align:center;color:#B7C8E6;">
+Enterprise Fraud Intelligence Dashboard
+</p>
+""", unsafe_allow_html=True)
+
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    st.markdown("""
+<div class="command-card">
+<h3>🧠 AI ENGINE</h3>
+<h1>ONLINE</h1>
+<p>Random Forest Model Active</p>
+</div>
+""", unsafe_allow_html=True)
+
+with c2:
+    st.markdown("""
+<div class="command-card">
+<h3>💳 RISK SCORE</h3>
+<h1>2%</h1>
+<p>Current Transaction Risk</p>
+</div>
+""", unsafe_allow_html=True)
+
+with c3:
+    st.markdown("""
+<div class="command-card">
+<h3>🛡️ SECURITY</h3>
+<h1>SECURED</h1>
+<p>Threat Detection Enabled</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+st.markdown("""
+<div class="timeline">
+
+<div class="step active">💳 Transaction</div>
+
+<div class="arrow">➜</div>
+
+<div class="step active">📊 Analysis</div>
+
+<div class="arrow">➜</div>
+
+<div class="step active">🤖 AI Model</div>
+
+<div class="arrow">➜</div>
+
+<div class="step active">🚨 Detection</div>
+
+<div class="arrow">➜</div>
+
+<div class="step active">✅ Secure</div>
+
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+st.success("✔ AI successfully completed fraud analysis pipeline.")
