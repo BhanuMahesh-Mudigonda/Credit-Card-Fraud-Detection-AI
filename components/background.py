@@ -2,116 +2,34 @@ import streamlit as st
 from utils.theme import safe_html
 
 def render_ambient_background():
-    bg_html = """
-    <!-- 8-Layer Animated Ambient Cyber Background -->
-    <div id="aegis-8layer-bg">
-        <!-- Layer 1: Moving Stars Canvas -->
-        <canvas id="bg-stars-canvas"></canvas>
-
-        <!-- Layer 2: Aurora Gradients -->
-        <div class="aurora-bg-layer"></div>
-
-        <!-- Layer 3: Cyber Grid Pattern -->
-        <div class="cyber-grid-layer"></div>
-
-        <!-- Layer 4: Neural Network Connection Canvas -->
-        <canvas id="bg-neural-canvas"></canvas>
-
-        <!-- Layer 5: World Map Topology Vector Overlay -->
-        <div class="world-map-bg-layer"></div>
-
-        <!-- Layer 6: Ambient Moving Particles Canvas -->
-        <canvas id="bg-particles-canvas"></canvas>
-
-        <!-- Layer 7: Volumetric Light Rays -->
-        <div class="light-rays-layer"></div>
-
-        <!-- Layer 8: Interactive Mouse Glow Light Follower -->
-        <div id="mouse-glow-follower"></div>
-    </div>
-
-    <style>
-    #aegis-8layer-bg {
-        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        z-index: -1; pointer-events: none; overflow: hidden; background: #050816;
-    }
-
-    /* Layer 1 & 4 & 6 Canvases */
-    #bg-stars-canvas, #bg-neural-canvas, #bg-particles-canvas {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    }
-
-    /* Layer 2: Aurora Gradients */
-    .aurora-bg-layer {
-        position: absolute; top: -30%; left: -20%; width: 140%; height: 140%;
-        background: 
-            radial-gradient(ellipse 60% 40% at 20% 20%, rgba(0, 212, 255, 0.18), transparent 70%),
-            radial-gradient(ellipse 50% 50% at 80% 70%, rgba(124, 58, 237, 0.18), transparent 70%),
-            radial-gradient(ellipse 40% 60% at 50% 40%, rgba(0, 212, 255, 0.1), transparent 60%);
-        filter: blur(50px); animation: ambientAurora 18s ease-in-out infinite alternate;
-    }
-    @keyframes ambientAurora {
-        0% { transform: scale(1) translate(0, 0) rotate(0deg); }
-        50% { transform: scale(1.1) translate(-30px, 20px) rotate(2deg); }
-        100% { transform: scale(1.05) translate(30px, -20px) rotate(-2deg); }
-    }
-
-    /* Layer 3: Cyber Grid Pattern */
-    .cyber-grid-layer {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background-size: 45px 45px;
-        background-image: 
-            linear-gradient(to right, rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-    }
-
-    /* Layer 5: World Map Overlay */
-    .world-map-bg-layer {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(circle at center, rgba(8, 27, 51, 0.4), transparent 80%);
-        opacity: 0.6;
-    }
-
-    /* Layer 7: Volumetric Light Rays */
-    .light-rays-layer {
-        position: absolute; top: -50%; left: 30%; width: 40%; height: 200%;
-        background: linear-gradient(180deg, rgba(0, 212, 255, 0.05), transparent 80%);
-        transform: rotate(-25deg); animation: lightRayMove 12s ease-in-out infinite alternate;
-    }
-    @keyframes lightRayMove {
-        0% { opacity: 0.3; transform: rotate(-25deg) translateX(-40px); }
-        100% { opacity: 0.8; transform: rotate(-25deg) translateX(40px); }
-    }
-
-    /* Layer 8: Mouse Glow Follower */
-    #mouse-glow-follower {
-        position: fixed; width: 350px; height: 350px; border-radius: 50%;
-        background: radial-gradient(circle, rgba(0, 212, 255, 0.15), transparent 70%);
-        pointer-events: none; transform: translate(-50%, -50%);
-        transition: left 0.15s ease-out, top 0.15s ease-out; z-index: 0;
-    }
-    </style>
-
+    js_injector = """
     <script>
-    (function Init8LayerBackground() {
-        if (window.__aegisBgInitialized) return;
-        window.__aegisBgInitialized = true;
+    (function InjectAegisBackground() {
+        const doc = window.parent.document || document;
+        
+        if (!doc.getElementById('aegis-8layer-bg')) {
+            const bgContainer = doc.createElement('div');
+            bgContainer.id = 'aegis-8layer-bg';
+            bgContainer.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-1; pointer-events:none; overflow:hidden; background:#040612;';
+            bgContainer.innerHTML = '<canvas id="bg-stars-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas><div class="aurora-bg-layer"></div><div class="cyber-grid-layer"></div><canvas id="bg-neural-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas><div class="world-map-bg-layer"></div><canvas id="bg-particles-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas><div class="light-rays-layer"></div><div id="mouse-glow-follower"></div>';
+            doc.body.insertBefore(bgContainer, doc.body.firstChild);
+        }
 
-        // Mouse glow tracker
-        const mouseGlow = document.getElementById('mouse-glow-follower');
-        window.addEventListener('mousemove', (e) => {
-            if (mouseGlow) {
+        const mouseGlow = doc.getElementById('mouse-glow-follower');
+        if (mouseGlow && !window.__aegisMouseBound) {
+            window.__aegisMouseBound = true;
+            doc.addEventListener('mousemove', (e) => {
                 mouseGlow.style.left = e.clientX + 'px';
                 mouseGlow.style.top = e.clientY + 'px';
-            }
-        });
+            });
+        }
 
-        // Layer 1: Moving Stars
-        const starsCanvas = document.getElementById('bg-stars-canvas');
-        if (starsCanvas) {
+        const starsCanvas = doc.getElementById('bg-stars-canvas');
+        if (starsCanvas && !window.__aegisStarsInit) {
+            window.__aegisStarsInit = true;
             const ctx = starsCanvas.getContext('2d');
-            starsCanvas.width = window.innerWidth;
-            starsCanvas.height = window.innerHeight;
+            starsCanvas.width = doc.documentElement.clientWidth || window.innerWidth;
+            starsCanvas.height = doc.documentElement.clientHeight || window.innerHeight;
             const stars = [];
             for (let i = 0; i < 90; i++) {
                 stars.push({
@@ -133,7 +51,7 @@ def render_ambient_background():
                     if (s.y > starsCanvas.height) s.y = 0;
                     ctx.beginPath();
                     ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+                    ctx.fillStyle = 'rgba(255, 255, 255, ' + s.alpha + ')';
                     ctx.fill();
                 });
                 requestAnimationFrame(animStars);
@@ -141,12 +59,12 @@ def render_ambient_background():
             animStars();
         }
 
-        // Layer 4: Neural Network Connection Lines
-        const neuralCanvas = document.getElementById('bg-neural-canvas');
-        if (neuralCanvas) {
+        const neuralCanvas = doc.getElementById('bg-neural-canvas');
+        if (neuralCanvas && !window.__aegisNeuralInit) {
+            window.__aegisNeuralInit = true;
             const nctx = neuralCanvas.getContext('2d');
-            neuralCanvas.width = window.innerWidth;
-            neuralCanvas.height = window.innerHeight;
+            neuralCanvas.width = doc.documentElement.clientWidth || window.innerWidth;
+            neuralCanvas.height = doc.documentElement.clientHeight || window.innerHeight;
             const nodes = [];
             for (let i = 0; i < 35; i++) {
                 nodes.push({
@@ -171,7 +89,7 @@ def render_ambient_background():
                             nctx.beginPath();
                             nctx.moveTo(nodes[i].x, nodes[i].y);
                             nctx.lineTo(nodes[j].x, nodes[j].y);
-                            nctx.strokeStyle = `rgba(0, 212, 255, ${0.12 * (1 - dist / 140)})`;
+                            nctx.strokeStyle = 'rgba(0, 240, 255, ' + (0.12 * (1 - dist / 140)) + ')';
                             nctx.lineWidth = 1;
                             nctx.stroke();
                         }
@@ -184,4 +102,8 @@ def render_ambient_background():
     })();
     </script>
     """
-    safe_html(bg_html)
+    st.components.v1.html(js_injector, height=0)
+
+
+
+

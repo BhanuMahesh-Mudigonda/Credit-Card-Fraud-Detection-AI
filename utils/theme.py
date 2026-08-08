@@ -1,15 +1,22 @@
+import re
 import streamlit as st
 from pathlib import Path
 
 def safe_html(html_str):
-    # Collapses all newlines and indentation so Streamlit's markdown parser
-    # never interprets indented HTML tags as pre/code blocks.
-    clean_html = ' '.join(html_str.split())
-    st.markdown(clean_html, unsafe_allow_html=True)
+    # 1. Strip all HTML comments (<!-- ... -->) completely
+    clean = re.sub(r'<!--.*?-->', '', html_str, flags=re.DOTALL)
+    # 2. Use native st.html to inject raw HTML directly without CommonMark markdown parsing
+    st.html(clean)
 
-def load_css():
+
+def get_cached_css():
     css_path = Path(__file__).parent.parent / "styles" / "style.css"
     if css_path.exists():
         with open(css_path, encoding="utf-8") as f:
-            css_content = f.read()
-        safe_html(f"<style>{css_content}</style>")
+            return f.read()
+    return ""
+
+def load_css():
+    css_content = get_cached_css()
+    if css_content:
+        st.html(f"<style>\n{css_content}\n</style>")

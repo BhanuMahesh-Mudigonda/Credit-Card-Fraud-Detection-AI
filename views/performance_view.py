@@ -3,14 +3,19 @@ from utils.theme import safe_html
 from components.charts import create_roc_curve_chart, create_confusion_matrix_chart
 
 def render_performance_view():
-    panel_header = """
+    from utils.model_loader import get_model_validation_metrics
+    from components.charts import create_roc_curve_chart, create_confusion_matrix_chart, create_pr_curve_chart
+    
+    m_stats = get_model_validation_metrics()
+
+    panel_header = f"""
     <div class="aegis-panel">
         <div class="panel-header">
             <div>
-                <div class="panel-title">📈 MODEL PERFORMANCE & SOC BENCHMARK</div>
-                <div class="panel-subtitle">Comprehensive evaluation metrics of the deployed XGBoost Fraud Intelligence Engine</div>
+                <div class="panel-title">📈 MODEL VALIDATION LABORATORY & HOLDOUT BENCHMARK</div>
+                <div class="panel-subtitle">Audited test evaluation metrics of the trained XGBoost Fraud Intelligence Engine</div>
             </div>
-            <span class="badge-approved">MODEL ACCURACY 99.95%</span>
+            <span class="badge-approved">HOLDOUT TEST SAMPLES: {m_stats['test_samples']:,}</span>
         </div>
     </div>
     """
@@ -18,44 +23,42 @@ def render_performance_view():
 
     c1, c2, c3, c4, c5 = st.columns(5)
     with c1:
-        safe_html('<div class="aegis-metric-card"><div class="metric-title">Accuracy</div><div class="metric-value">99.95%</div><div class="metric-delta delta-positive">SLA >99.5%</div></div>')
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Test Accuracy</div><div class="metric-value">{m_stats["test_accuracy"]:.2f}%</div><div class="metric-delta delta-positive">Holdout Test</div></div>')
     with c2:
-        safe_html('<div class="aegis-metric-card"><div class="metric-title">Precision</div><div class="metric-value">98.40%</div><div class="metric-delta delta-positive">Low False Pos</div></div>')
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Test Precision</div><div class="metric-value">{m_stats["test_precision"]:.2f}%</div><div class="metric-delta delta-positive">Low False Pos</div></div>')
     with c3:
-        safe_html('<div class="aegis-metric-card"><div class="metric-title">Recall</div><div class="metric-value">89.20%</div><div class="metric-delta delta-positive">Catch Rate</div></div>')
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Test Recall</div><div class="metric-value">{m_stats["test_recall"]:.2f}%</div><div class="metric-delta delta-positive">84 / 98 Frauds Caught</div></div>')
     with c4:
-        safe_html('<div class="aegis-metric-card"><div class="metric-title">F1-Score</div><div class="metric-value">93.55%</div><div class="metric-delta delta-positive">Optimal Balance</div></div>')
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Test F1-Score</div><div class="metric-value">{m_stats["test_f1"]:.2f}%</div><div class="metric-delta delta-positive">Harmonic Mean</div></div>')
     with c5:
-        safe_html('<div class="aegis-metric-card"><div class="metric-title">ROC-AUC</div><div class="metric-value">0.9972</div><div class="metric-delta delta-positive">State-of-Art</div></div>')
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Test ROC-AUC</div><div class="metric-value">{m_stats["test_auc"]:.4f}</div><div class="metric-delta delta-positive">State-of-Art</div></div>')
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         st.plotly_chart(create_roc_curve_chart(), use_container_width=True)
     with col2:
+        st.plotly_chart(create_pr_curve_chart(), use_container_width=True)
+    with col3:
         st.plotly_chart(create_confusion_matrix_chart(), use_container_width=True)
 
-    st.markdown("### 🏆 Machine Learning Model Benchmark Matrix")
+    st.markdown("### 🏆 Machine Learning Model Evaluation Matrix")
     models = [
-        {"name": "AEGIS XGBoost Ensemble (Active)", "acc": "99.95%", "prec": "98.40%", "rec": "89.20%", "f1": "93.55%", "lat": "1.20 ms", "status": "ACTIVE DEPLOYMENT"},
-        {"name": "Random Forest Classifier", "acc": "99.93%", "prec": "96.10%", "rec": "85.40%", "f1": "90.41%", "lat": "4.80 ms", "status": "STANDBY"},
-        {"name": "Deep Neural Network (MLP)", "acc": "99.91%", "prec": "93.50%", "rec": "82.10%", "f1": "87.43%", "lat": "8.50 ms", "status": "EXPERIMENTAL"},
-        {"name": "Logistic Regression Baseline", "acc": "99.88%", "prec": "86.20%", "rec": "62.40%", "f1": "72.40%", "lat": "0.40 ms", "status": "LEGACY"},
+        {"name": f"{m_stats['model_name']} (Active)", "acc": f"{m_stats['test_accuracy']:.2f}%", "prec": f"{m_stats['test_precision']:.2f}%", "rec": f"{m_stats['test_recall']:.2f}%", "f1": f"{m_stats['test_f1']:.2f}%", "auc": f"{m_stats['test_auc']:.4f}", "status": "ACTIVE DEPLOYMENT"},
     ]
 
     rows_html = ""
     for m in models:
-        is_active = "border-left: 3px solid #00D4FF; background: rgba(0, 212, 255, 0.05);" if "Active" in m['name'] else ""
-        badge = '<span class="badge-approved">ACTIVE</span>' if "ACTIVE" in m['status'] else '<span class="badge-review">STANDBY</span>'
+        badge = '<span class="badge-approved">ACTIVE DEPLOYMENT</span>'
         rows_html += f"""
-        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); {is_active}">
+        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-left: 3px solid #00D4FF; background: rgba(0, 212, 255, 0.05);">
             <td style="padding: 12px; font-weight: 700;">{m['name']}</td>
             <td>{m['acc']}</td>
             <td>{m['prec']}</td>
             <td>{m['rec']}</td>
             <td style="font-weight: 700; color: #00D4FF;">{m['f1']}</td>
-            <td>{m['lat']}</td>
+            <td style="font-weight: 700; color: #10B981;">{m['auc']}</td>
             <td>{badge}</td>
         </tr>
         """
@@ -70,8 +73,8 @@ def render_performance_view():
                     <th>Precision</th>
                     <th>Recall</th>
                     <th>F1-Score</th>
-                    <th>Latency</th>
-                    <th>Status</th>
+                    <th>ROC-AUC</th>
+                    <th>Deployment Status</th>
                 </tr>
             </thead>
             <tbody>

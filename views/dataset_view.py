@@ -6,52 +6,41 @@ from utils.dataset_loader import get_sample_dataset, get_country_fraud_stats
 from components.charts import create_bar_chart, CYBER_LAYOUT
 
 def render_dataset_view():
-    panel_header = """
+    from utils.dataset_loader import get_dataset_summary, get_sample_dataset, get_country_fraud_stats, load_full_dataset
+    
+    d_stats = get_dataset_summary()
+
+    panel_header = f"""
     <div class="aegis-panel">
         <div class="panel-header">
             <div>
-                <div class="panel-title">📊 GLOBAL TRANSACTION DATASET ANALYTICS</div>
-                <div class="panel-subtitle">European credit card dataset snapshot with 28 PCA threat features</div>
+                <div class="panel-title">📊 DATA INTELLIGENCE CENTER & AUDIT REGISTRY</div>
+                <div class="panel-subtitle">Audited Kaggle European credit card fraud dataset with 28 PCA threat features</div>
             </div>
-            <span class="badge-approved">284,807 SAMPLES LOADED</span>
+            <span class="badge-approved">{d_stats['total_rows']:,} SAMPLES VERIFIED</span>
         </div>
     </div>
     """
     safe_html(panel_header)
 
-    c1, c2, c3, c4 = st.columns(4)
+    c1, c2, c3, c4, c5 = st.columns(5)
     with c1:
-        safe_html("""
-        <div class="aegis-metric-card">
-            <div class="metric-title">Total Records</div>
-            <div class="metric-value">284,807</div>
-            <div class="metric-delta delta-positive">Full SOC History</div>
-        </div>
-        """)
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Total Records</div><div class="metric-value">{d_stats["total_rows"]:,}</div><div class="metric-delta delta-positive">Full History</div></div>')
     with c2:
-        safe_html("""
-        <div class="aegis-metric-card">
-            <div class="metric-title">Fraud Class Count</div>
-            <div class="metric-value">492</div>
-            <div class="metric-delta delta-negative">0.172% Imbalance</div>
-        </div>
-        """)
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Fraud Cases</div><div class="metric-value">{d_stats["fraud_count"]}</div><div class="metric-delta delta-negative">{d_stats["fraud_pct"]}% Imbalance</div></div>')
     with c3:
-        safe_html("""
-        <div class="aegis-metric-card">
-            <div class="metric-title">PCA Attributes</div>
-            <div class="metric-value">28</div>
-            <div class="metric-delta delta-positive">V1 to V28 Encrypted</div>
-        </div>
-        """)
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Feature Vectors</div><div class="metric-value">{d_stats["feature_count"]}</div><div class="metric-delta delta-positive">V1 to V28 + Time/Amt</div></div>')
     with c4:
-        safe_html("""
-        <div class="aegis-metric-card">
-            <div class="metric-title">Avg Transaction</div>
-            <div class="metric-value">$88.35</div>
-            <div class="metric-delta delta-neutral">Max $25,691</div>
-        </div>
-        """)
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Missing Values</div><div class="metric-value">{d_stats["null_count"]}</div><div class="metric-delta delta-positive">100% Complete</div></div>')
+    with c5:
+        safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Duplicates</div><div class="metric-value">{d_stats["duplicate_count"]:,}</div><div class="metric-delta delta-neutral">{d_stats["duplicate_pct"]}% Audit Ratio</div></div>')
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Data Preview Expander & Table
+    st.markdown("### 📋 Verified Dataset Preview & Feature Inspection")
+    sample_df = get_sample_dataset(100)
+    st.dataframe(sample_df, use_container_width=True, height=280)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -59,7 +48,7 @@ def render_dataset_view():
     with col1:
         st.plotly_chart(create_bar_chart(), use_container_width=True)
     with col2:
-        df = get_sample_dataset()
+        df = get_sample_dataset(800)
         fig = px.scatter(df, x='V14', y='V10', color='Class', color_discrete_map={0: '#00D4FF', 1: '#EF4444'},
                          title="🔍 PCA DISCRIMINANT FEATURE CLUSTER (V14 vs V10)")
         fig.update_layout(CYBER_LAYOUT)

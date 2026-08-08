@@ -12,9 +12,16 @@ st.set_page_config(
 from utils.theme import load_css
 load_css()
 
-# 3. Render 8-Layer Animated Ambient Cyber Background
+
+
+# 3. Render 8-Layer Animated Ambient Cyber Background & Fast Activation
 from components.background import render_ambient_background
+from components.intro_animation import render_intro_animation
+from components.floating_assistant import render_floating_assistant
+
 render_ambient_background()
+render_intro_animation()
+render_floating_assistant()
 
 # 4. Import Navigation Component & Page Views
 from components.navbar import render_top_navbar
@@ -26,6 +33,11 @@ from views.explain_ai_view import render_explain_ai_view
 from views.dashboard_view import render_dashboard_view
 from views.reports_view import render_reports_view
 from views.about_view import render_about_view
+from components.intro_animation import render_intro_animation
+from components.copilot import render_copilot_quick_button
+
+# 4. Render Pleasant Cinematic Entry Scan Transition on page navigation
+render_intro_animation(force_play=True)
 
 # 5. Render Sticky Glass Top Navigation Bar
 render_top_navbar()
@@ -51,3 +63,10 @@ elif current_page == "About":
     render_about_view()
 else:
     render_home_view()
+
+# 7. Render Floating Copilot Quick Trigger Button on all pages
+render_copilot_quick_button()
+
+# 8. Render Footer with Quick Bottom Navigation Console
+from components.footer import footer
+footer()

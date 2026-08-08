@@ -84,22 +84,46 @@ def render_prediction_view():
         risk_percent = prob * 100
 
         if analyze_btn:
-            with st.spinner("Scanning transaction through AEGIS AI Core..."):
-                time.sleep(0.4)
+            # Append prediction event to session_state prediction_history
+            if "prediction_history" not in st.session_state:
+                st.session_state.prediction_history = []
+            
+            import random
+            from datetime import datetime
+            txn_id = random.randint(99100, 99999)
+            decision = "BLOCKED" if risk_percent >= 50.0 else "APPROVED"
+            
+            st.session_state.prediction_history.append({
+                "id": txn_id,
+                "amount": amount,
+                "risk": risk_percent,
+                "decision": decision,
+                "country": country,
+                "channel": channel,
+                "timestamp": datetime.now().strftime("%H:%M:%S UTC")
+            })
 
             steps_html = f"""
             <div style="display: flex; flex-direction: column; gap: 8px;">
-                <div class="feed-item" style="border-left: 4px solid #00D4FF;">
-                    <div>💳 <b>Transaction Received</b>: ${amount:,.2f} ({country})</div>
+                <div class="feed-item" style="border-left: 4px solid #00F0FF;">
+                    <div>01 <b>INPUT RECEIVED</b>: ${amount:,.2f} ({country} • {channel})</div>
                     <span class="badge-approved">PASSED</span>
                 </div>
-                <div class="feed-item" style="border-left: 4px solid #7C3AED;">
-                    <div>📊 <b>PCA Feature Extraction</b>: 28 Vector Nodes Analyzed</div>
+                <div class="feed-item" style="border-left: 4px solid #8B5CF6;">
+                    <div>02 <b>FEATURES PREPARED</b>: V14={v14:.2f}, V4={v4:.2f}, V10={v10:.2f}</div>
                     <span class="badge-approved">PASSED</span>
                 </div>
-                <div class="feed-item" style="border-left: 4px solid #00D4FF;">
-                    <div>🤖 <b>XGBoost Neural Inference</b>: Risk Calculated</div>
+                <div class="feed-item" style="border-left: 4px solid #00F0FF;">
+                    <div>03 <b>MODEL INFERENCE</b>: XGBoost Gradient Boosted Trees</div>
                     <span class="badge-approved">PASSED</span>
+                </div>
+                <div class="feed-item" style="border-left: 4px solid #F59E0B;">
+                    <div>04 <b>PROBABILITY SCORE</b>: Fraud Risk Calculated</div>
+                    <span class="badge-approved">{risk_percent:.2f}% RISK</span>
+                </div>
+                <div class="feed-item" style="border-left: 4px solid {'#EF4444' if risk_percent >= 50.0 else '#10B981'};">
+                    <div>05 <b>DECISION GENERATED</b>: Gateway Policy Enforcement</div>
+                    <span class="{'badge-blocked' if risk_percent >= 50.0 else 'badge-approved'}">{decision}</span>
                 </div>
             </div>
             <br>
@@ -119,16 +143,16 @@ def render_prediction_view():
                     <div style="margin-top: 1rem; text-align: left; font-size: 0.9rem; color: #CBD5E1;">
                         <b>Threat Factor Breakdown:</b><br>
                         • Extreme anomaly in V14 Identity feature ({v14:.2f})<br>
-                        • High velocity transaction amount (${amount:,.2f})<br>
-                        • Unrecognized foreign device fingerprint
+                        • Transaction amount velocity (${amount:,.2f})<br>
+                        • V4 Frequency deviation ({v4:.2f})
                     </div>
                 </div>
                 """
                 safe_html(alert_html)
             else:
                 success_html = f"""
-                <div style="background: rgba(34, 197, 94, 0.15); border: 2px solid #22C55E; border-radius: 16px; padding: 1.5rem; text-align: center;">
-                    <h2 style="color: #22C55E; margin: 0;">✅ LEGITIMATE TRANSACTION</h2>
+                <div style="background: rgba(16, 185, 129, 0.15); border: 2px solid #10B981; border-radius: 16px; padding: 1.5rem; text-align: center;">
+                    <h2 style="color: #10B981; margin: 0;">✅ LEGITIMATE TRANSACTION</h2>
                     <p style="color: #FFFFFF; margin-top: 0.5rem;">Fraud Risk Score: <b>{risk_percent:.2f}%</b></p>
                     <div class="badge-approved" style="font-size: 1rem; padding: 8px 24px; display: inline-block;">
                         ACTION TAKEN: APPROVED & CLEARED

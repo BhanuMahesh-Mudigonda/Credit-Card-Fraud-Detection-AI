@@ -1,100 +1,98 @@
 import streamlit as st
 from utils.theme import safe_html
 
-LIVE_FEED_ITEMS = [
-    {"country": "India", "flag": "🇮🇳", "amount": "₹25,000", "status": "APPROVED", "class": "badge-approved", "time": "Just now", "type": "POS Checkout"},
-    {"country": "USA", "flag": "🇺🇸", "amount": "₹95,000 ($1,150)", "status": "BLOCKED", "class": "badge-blocked", "time": "2s ago", "type": "CNP Online"},
-    {"country": "Japan", "flag": "🇯🇵", "amount": "¥450,000", "status": "REVIEW REQUIRED", "class": "badge-review", "time": "4s ago", "type": "ATM Withdrawal"},
-    {"country": "Germany", "flag": "🇩🇪", "amount": "€12,500", "status": "APPROVED", "class": "badge-approved", "time": "6s ago", "type": "Wire Transfer"},
-    {"country": "Dubai", "flag": "🇦🇪", "amount": "$45,000", "status": "BLOCKED", "class": "badge-blocked", "time": "9s ago", "type": "Luxury Crypto POS"},
-    {"country": "UK", "flag": "🇬🇧", "amount": "£8,200", "status": "APPROVED", "class": "badge-approved", "time": "12s ago", "type": "E-commerce"},
-    {"country": "Singapore", "flag": "🇸🇬", "amount": "$14,000", "status": "REVIEW REQUIRED", "class": "badge-review", "time": "15s ago", "type": "Cross-Border FX"},
-]
-
 def render_world_network():
-    network_svg = """
-    <div class="aegis-panel" style="position: relative; overflow: hidden; min-height: 400px; display: flex; flex-direction: column; justify-content: space-between;">
-        <div class="panel-header">
-            <div>
-                <div class="panel-title">🌐 GLOBAL FINANCIAL THREAT MONITOR</div>
-                <div class="panel-subtitle">Continuous real-time packet surveillance across 7 major banking nodes</div>
-            </div>
-            <span class="badge-approved">🟢 100% NODE SYNCHRONIZED</span>
-        </div>
-        
-        <svg viewBox="0 0 1000 380" style="width: 100%; height: 320px; background: rgba(3, 6, 18, 0.6); border-radius: 16px; border: 1px solid rgba(0, 212, 255, 0.1);">
-            <path d="M 180 180 Q 380 90 520 180" stroke="rgba(0, 212, 255, 0.3)" stroke-width="1.5" fill="none" stroke-dasharray="6 4" />
-            <path d="M 520 180 Q 680 120 820 160" stroke="rgba(124, 58, 237, 0.4)" stroke-width="1.5" fill="none" />
-            <path d="M 520 180 Q 420 280 280 250" stroke="rgba(0, 212, 255, 0.3)" stroke-width="1.5" fill="none" />
-            <path d="M 520 180 Q 640 280 750 260" stroke="rgba(0, 212, 255, 0.3)" stroke-width="1.5" fill="none" />
-            
-            <circle cx="180" cy="180" class="network-node" />
-            <text x="180" y="210" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">🇺🇸 USA (NYC)</text>
-            
-            <circle cx="520" cy="180" r="14" fill="#00D4FF" filter="drop-shadow(0 0 15px #00D4FF)" />
-            <text x="520" y="145" fill="#00D4FF" font-size="14" font-weight="900" text-anchor="middle">🛡️ AEGIS AI CORE</text>
-            <text x="520" y="215" fill="#FFFFFF" font-size="11" text-anchor="middle">🇩🇪 Germany & 🇬🇧 UK</text>
-            
-            <circle cx="420" cy="270" class="network-node" />
-            <text x="420" y="300" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">🇦🇪 Dubai</text>
-            
-            <circle cx="640" cy="270" class="network-node" />
-            <text x="640" y="300" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">🇮🇳 India (HYD/BOM)</text>
-            
-            <circle cx="750" cy="260" class="network-node" />
-            <text x="750" y="290" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">🇸🇬 Singapore</text>
-            
-            <circle cx="820" cy="160" class="network-node" />
-            <text x="820" y="190" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle">🇯🇵 Japan (Tokyo)</text>
-            
-            <circle cx="350" cy="140" r="4" class="data-packet">
-                <animate attributeName="cx" values="180;520;180" dur="4s" repeatCount="indefinite" />
-                <animate attributeName="cy" values="180;180;180" dur="4s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="670" cy="150" r="4" class="data-packet" fill="#EF4444">
-                <animate attributeName="cx" values="520;820;520" dur="3s" repeatCount="indefinite" />
-                <animate attributeName="cy" values="180;160;180" dur="3s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="580" cy="225" r="4" class="data-packet">
-                <animate attributeName="cx" values="520;640;520" dur="3.5s" repeatCount="indefinite" />
-                <animate attributeName="cy" values="180;270;180" dur="3.5s" repeatCount="indefinite" />
-            </circle>
-        </svg>
-    </div>
-    """
-    safe_html(network_svg)
+    """Renders the Fraud Feature Threat Landscape PCA scatter plot based on actual dataset features V14 vs V10."""
+    from utils.dataset_loader import get_sample_dataset
+    import plotly.express as px
+    from components.charts import CYBER_LAYOUT
+
+    df = get_sample_dataset(800)
+    fig = px.scatter(
+        df, x='V14', y='V10', color='Class',
+        color_discrete_map={0: '#00F0FF', 1: '#EF4444'},
+        labels={'Class': 'Transaction Class', 'V14': 'V14 (Identity Integrity)', 'V10': 'V10 (Device Fingerprint)'},
+        hover_data=['Amount', 'Time'],
+        title="🌐 FRAUD FEATURE THREAT LANDSCAPE (V14 vs V10 Discriminant Cluster)"
+    )
+    layout = CYBER_LAYOUT.copy()
+    layout.update(
+        height=380,
+        legend=dict(orientation='h', y=-0.18, x=0.2),
+        margin=dict(l=40, r=40, t=60, b=50)
+    )
+    fig.update_layout(layout)
+    st.plotly_chart(fig, use_container_width=True)
 
 def render_live_feed():
-    feed_items_html = ""
-    for item in LIVE_FEED_ITEMS:
-        feed_items_html += f"""
-        <div class="feed-item">
-            <div class="feed-country">
-                <span style="font-size: 1.3rem;">{item['flag']}</span>
-                <div>
-                    <div>{item['country']}</div>
-                    <div style="font-size: 0.75rem; color: #94A3B8;">{item['type']} • {item['time']}</div>
-                </div>
+    """Renders honest data-driven AEGIS Inference Command Stream from st.session_state.prediction_history."""
+    history = st.session_state.get("prediction_history", [])
+    
+    if not history:
+        feed_items_html = """
+        <div style="text-align: center; padding: 2rem 1rem; color: #94A3B8;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px;">
+                <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10B981; color: #10B981; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800;">● MODEL READY</span>
+                <span style="background: rgba(0, 240, 255, 0.15); border: 1px solid #00F0FF; color: #00F0FF; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800;">● PIPELINE ONLINE</span>
+                <span style="background: rgba(139, 92, 246, 0.15); border: 1px solid #8B5CF6; color: #8B5CF6; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800;">● XGBOOST ACTIVE</span>
             </div>
-            <div style="text-align: right;">
-                <div class="feed-amount">{item['amount']}</div>
-                <span class="{item['class']}">{item['status']}</span>
+            
+            <svg viewBox="0 0 200 200" style="width: 140px; height: 140px; margin: 10px auto;">
+                <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(0, 240, 255, 0.15)" stroke-width="3"/>
+                <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(0, 240, 255, 0.3)" stroke-width="2" stroke-dasharray="8 6"/>
+                <circle cx="100" cy="100" r="40" fill="rgba(0, 240, 255, 0.08)" stroke="#00F0FF" stroke-width="2">
+                    <animate attributeName="r" values="35;45;35" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="100" cy="100" r="10" fill="#00F0FF"/>
+                <line x1="100" y1="100" x2="160" y2="100" stroke="#00F0FF" stroke-width="2">
+                    <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="4s" repeatCount="indefinite"/>
+                </line>
+            </svg>
+            
+            <div style="font-weight: 700; color: #FFFFFF; font-size: 1rem; margin-top: 6px;">NO PREDICTION EVENTS IN CURRENT SESSION</div>
+            <div style="font-size: 0.82rem; color: #64748B; margin-top: 4px; max-width: 320px; margin-left: auto; margin-right: auto;">
+                Generate a real prediction from the Prediction Studio to populate this command stream.
             </div>
         </div>
         """
+    else:
+        feed_items_html = ""
+        for item in reversed(history[-6:]):
+            badge_cls = "badge-blocked" if item['risk'] >= 50.0 else "badge-approved"
+            feed_items_html += f"""
+            <div class="feed-item" style="border-left: 3px solid {'#EF4444' if item['risk'] >= 50.0 else '#10B981'}; margin-bottom: 8px;">
+                <div class="feed-country">
+                    <span style="font-size: 1.3rem;">{'🚨' if item['risk'] >= 50.0 else '✅'}</span>
+                    <div>
+                        <div style="font-weight: 800; color: #FFFFFF;">Session Txn #{item['id']}</div>
+                        <div style="font-size: 0.75rem; color: #94A3B8;">{item['channel']} • {item['timestamp']}</div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="feed-amount" style="font-weight: 800;">${item['amount']:,.2f}</div>
+                    <span class="{badge_cls}" style="font-size: 0.72rem;">{item['decision']} ({item['risk']:.1f}% Risk)</span>
+                </div>
+            </div>
+            """
 
     feed_html = f"""
-    <div class="aegis-panel" style="height: 100%;">
-        <div class="panel-header">
-            <div>
-                <div class="panel-title">📡 LIVE TRANSACTION STREAM</div>
-                <div class="panel-subtitle">Automated real-time fraud scoring</div>
+    <div class="aegis-panel" style="height: 100%; min-height: 440px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">📡 AEGIS INFERENCE COMMAND STREAM</div>
+                    <div class="panel-subtitle">Real-time XGBoost inference event telemetry</div>
+                </div>
+                <span class="badge-approved">{len(history)} SESSION EVENTS</span>
             </div>
-            <span class="badge-approved">LIVE STREAM</span>
-        </div>
-        <div class="live-feed-container">
-            {feed_items_html}
+            <div class="live-feed-container">
+                {feed_items_html}
+            </div>
         </div>
     </div>
     """
     safe_html(feed_html)
+    
+    if st.button("🚀 EXECUTE TEST PREDICTION SCAN", key="cmd_stream_run_btn", use_container_width=True):
+        st.session_state.current_page = "Prediction"
+        st.rerun()
