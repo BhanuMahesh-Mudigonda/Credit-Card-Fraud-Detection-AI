@@ -41,11 +41,12 @@ render_top_navbar()
 # 6. Route to Active Page View (Instantaneous Rendering)
 current_page = st.session_state.get("current_page", "Home")
 last_page = st.session_state.get("_last_rendered_page", None)
+page_changed = (current_page != last_page)
 
-if current_page != last_page:
+if page_changed:
     st.session_state["_last_rendered_page"] = current_page
-    reset_scroll_to_top(force=True)
 
+# Render target page FIRST
 if current_page == "Home":
     render_home_view()
 elif current_page == "Dataset":
@@ -64,6 +65,10 @@ elif current_page == "About":
     render_about_view()
 else:
     render_home_view()
+
+# Execute scroll reset ONLY AFTER target page content has rendered
+if page_changed:
+    reset_scroll_to_top(force=True)
 
 # 7. Render Floating Copilot Quick Trigger Button on all pages
 render_copilot_quick_button()

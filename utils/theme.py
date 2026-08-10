@@ -22,7 +22,7 @@ def load_css():
         st.html(f"<style>\n{css_content}\n</style>")
 
 def reset_scroll_to_top(force=False):
-    """Single source of truth: Forces Streamlit container to scroll position (0, 0) top only on page navigation."""
+    """Single source of truth: Forces Streamlit container to scroll position (0, 0) top after page rendering."""
     if not force:
         return
 
@@ -34,7 +34,7 @@ def reset_scroll_to_top(force=False):
             var doc = (window.parent && window.parent.document) ? window.parent.document : document;
             var win = window.parent || window;
             
-            // Disable browser automatic scroll restoration
+            // Set manual scroll restoration
             if ('scrollRestoration' in win.history) {
                 win.history.scrollRestoration = 'manual';
             }
@@ -70,11 +70,6 @@ def reset_scroll_to_top(force=False):
             // Synchronize with browser DOM paint via requestAnimationFrame
             win.requestAnimationFrame(function() {
                 setScrollZero();
-                win.requestAnimationFrame(function() {
-                    setScrollZero();
-                    setTimeout(setScrollZero, 30);
-                    setTimeout(setScrollZero, 100);
-                });
             });
         } catch (e) {
             console.log("AEGIS Scroll Reset Notice:", e);
