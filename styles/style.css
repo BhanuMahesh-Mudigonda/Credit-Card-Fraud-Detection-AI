@@ -100,13 +100,18 @@ section[data-testid="stSidebar"] div[data-testid="stSidebarContent"] {
 }
 
 /* Streamlit Root App Container Override */
+[data-testid="stAppViewContainer"] {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
 .stApp {
   background: transparent !important;
   color: var(--text-main) !important;
 }
 
 .main .block-container {
-  padding-top: 1.8rem !important;
+  padding-top: 1.2rem !important;
   padding-bottom: 2.0rem !important;
   padding-left: 2rem !important;
   padding-right: 2rem !important;
