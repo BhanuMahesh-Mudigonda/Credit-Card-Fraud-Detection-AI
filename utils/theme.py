@@ -22,7 +22,7 @@ def load_css():
         st.html(f"<style>\n{css_content}\n</style>")
 
 def reset_scroll_to_top():
-    """Forces the browser window and Streamlit containers to scroll position (0, 0) top instantly."""
+    """Single source of truth: Forces browser and Streamlit containers to scroll position (0, 0) top on page navigation."""
     scroll_js = """
     <div id="aegis-page-top" style="position: absolute; top: 0; left: 0; height: 1px; width: 1px; pointer-events: none;"></div>
     <script>
@@ -31,7 +31,7 @@ def reset_scroll_to_top():
             var doc = (window.parent && window.parent.document) ? window.parent.document : document;
             var win = window.parent || window;
             
-            // Disable browser automatic scroll restoration
+            // Set manual scroll restoration
             if ('scrollRestoration' in win.history) {
                 win.history.scrollRestoration = 'manual';
             }
@@ -41,9 +41,6 @@ def reset_scroll_to_top():
 
             if (win.location && win.location.hash) {
                 win.history.replaceState(null, "", win.location.pathname);
-            }
-            if (window.location && window.location.hash) {
-                window.history.replaceState(null, "", window.location.pathname);
             }
 
             function setScrollZero() {
@@ -55,6 +52,7 @@ def reset_scroll_to_top():
                     doc.querySelector('section.main'),
                     doc.querySelector('.main'),
                     doc.querySelector('[data-testid="stAppViewContainer"]'),
+                    doc.querySelector('[data-testid="stMain"]'),
                     doc.querySelector('.block-container'),
                     doc.querySelector('.stApp'),
                     doc.documentElement,
@@ -71,24 +69,13 @@ def reset_scroll_to_top():
                 if (typeof win.scrollTo === 'function') {
                     win.scrollTo({top: 0, left: 0, behavior: 'instant'});
                 }
-                if (typeof window.scrollTo === 'function') {
-                    window.scrollTo({top: 0, left: 0, behavior: 'instant'});
-                }
             }
 
+            // Immediate execution on render
             setScrollZero();
-
-            var delays = [5, 20, 50, 100, 180, 300, 500, 800, 1200];
-            delays.forEach(function(delay) {
-                setTimeout(setScrollZero, delay);
-            });
-
-            var observer = new MutationObserver(setScrollZero);
-            var targetNode = doc.querySelector('section.main') || doc.body;
-            if (targetNode) {
-                observer.observe(targetNode, { childList: true, subtree: true });
-                setTimeout(function() { observer.disconnect(); }, 1500);
-            }
+            setTimeout(setScrollZero, 10);
+            setTimeout(setScrollZero, 50);
+            setTimeout(setScrollZero, 150);
         } catch (e) {
             console.log("AEGIS Scroll Reset Notice:", e);
         }
