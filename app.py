@@ -35,14 +35,12 @@ from views.about_view import render_about_view
 from components.intro_animation import render_intro_animation
 from components.copilot import render_copilot_quick_button
 
-# 4. Render Pleasant Cinematic Entry Scan Transition on page navigation
-render_intro_animation(force_play=True)
-
 # 5. Render Sticky Glass Top Navigation Bar
 render_top_navbar()
 
 # 6. Route to Active Page View (Instantaneous Rendering)
 current_page = st.session_state.get("current_page", "Home")
+reset_scroll_to_top()
 
 if current_page == "Home":
     render_home_view()

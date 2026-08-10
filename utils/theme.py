@@ -31,6 +31,14 @@ def reset_scroll_to_top():
             var doc = (window.parent && window.parent.document) ? window.parent.document : document;
             var win = window.parent || window;
             
+            // Disable browser automatic scroll restoration
+            if ('scrollRestoration' in win.history) {
+                win.history.scrollRestoration = 'manual';
+            }
+            if ('scrollRestoration' in window.history) {
+                window.history.scrollRestoration = 'manual';
+            }
+
             if (win.location && win.location.hash) {
                 win.history.replaceState(null, "", win.location.pathname);
             }
@@ -46,6 +54,7 @@ def reset_scroll_to_top():
                 var elements = [
                     doc.querySelector('section.main'),
                     doc.querySelector('.main'),
+                    doc.querySelector('[data-testid="stAppViewContainer"]'),
                     doc.querySelector('.block-container'),
                     doc.querySelector('.stApp'),
                     doc.documentElement,
@@ -69,7 +78,7 @@ def reset_scroll_to_top():
 
             setScrollZero();
 
-            var delays = [10, 30, 60, 100, 180, 300, 500, 800, 1200];
+            var delays = [5, 20, 50, 100, 180, 300, 500, 800, 1200];
             delays.forEach(function(delay) {
                 setTimeout(setScrollZero, delay);
             });

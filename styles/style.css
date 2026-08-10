@@ -106,12 +106,11 @@ section[data-testid="stSidebar"] div[data-testid="stSidebarContent"] {
 }
 
 .main .block-container {
-  padding-top: 4.2rem !important;
+  padding-top: 1.8rem !important;
   padding-bottom: 2.0rem !important;
   padding-left: 2rem !important;
   padding-right: 2rem !important;
   max-width: 1650px !important;
-  animation: pageFadeIn 0.55s ease-out forwards;
 }
 
 /* Compact Navigation Bar Element Spacing */
@@ -121,8 +120,8 @@ section[data-testid="stSidebar"] div[data-testid="stSidebarContent"] {
 }
 
 @keyframes pageFadeIn {
-  0% { opacity: 0; transform: translateY(12px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% { opacity: 0.95; }
+  100% { opacity: 1; }
 }
 
 /* Custom Scrollbar */
