@@ -40,7 +40,11 @@ render_top_navbar()
 
 # 6. Route to Active Page View (Instantaneous Rendering)
 current_page = st.session_state.get("current_page", "Home")
-reset_scroll_to_top()
+last_page = st.session_state.get("_last_rendered_page", None)
+
+if current_page != last_page:
+    st.session_state["_last_rendered_page"] = current_page
+    reset_scroll_to_top(force=True)
 
 if current_page == "Home":
     render_home_view()

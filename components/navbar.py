@@ -48,8 +48,6 @@ def render_top_navbar():
     """
     safe_html(navbar_html)
 
-    reset_scroll_to_top()
-
     cols = st.columns(len(NAV_ITEMS))
     for idx, (item, icon) in enumerate(NAV_ITEMS):
         with cols[idx]:
@@ -58,5 +56,4 @@ def render_top_navbar():
             btn_type = "primary" if is_active else "secondary"
             if st.button(btn_label, key=f"nav_btn_{item}", type=btn_type, use_container_width=True):
                 st.session_state.current_page = item
-                reset_scroll_to_top()
                 st.rerun()

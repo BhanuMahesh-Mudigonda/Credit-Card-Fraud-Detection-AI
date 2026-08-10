@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.theme import safe_html, reset_scroll_to_top
+from utils.theme import safe_html
 
 PAGE_SEQUENCE = ["Home", "Dataset", "Prediction", "Performance", "Explain AI", "Dashboard", "Reports", "About"]
 
@@ -22,7 +22,6 @@ def footer():
         if has_prev and prev_page:
             if st.button(f"← PREV: {prev_page}", key="footer_prev_btn", type="secondary", use_container_width=True):
                 st.session_state.current_page = prev_page
-                reset_scroll_to_top()
                 st.rerun()
 
     with c_center:
@@ -40,7 +39,6 @@ def footer():
         next_label = f"NEXT: {next_page} →" if has_next else f"🔄 START OVER: {next_page}"
         if st.button(next_label, key="footer_next_btn", type="primary", use_container_width=True):
             st.session_state.current_page = next_page
-            reset_scroll_to_top()
             st.rerun()
 
     st.markdown(
