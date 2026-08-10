@@ -48,7 +48,7 @@ html, body {
   background-color: var(--bg-primary) !important;
   color: var(--text-main) !important;
   overflow-x: hidden;
-  scroll-behavior: smooth;
+  scroll-behavior: auto !important;
 }
 
 /* Hide Default Streamlit Chrome (Keep Sidebar Toggle Control Active) */
