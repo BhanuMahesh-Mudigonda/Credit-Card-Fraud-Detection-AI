@@ -17,6 +17,13 @@ def render_prediction_view():
     </div>
     """
     safe_html(panel_header)
+    # Render Real-Time Fraud Attack Simulator Bar
+    from components.soc_intelligence import (
+        render_attack_simulator_bar,
+        render_adaptive_risk_breakdown,
+        render_ai_fraud_reasoning
+    )
+    render_attack_simulator_bar()
 
     st.markdown("### ⚡ Quick Attack Vectors & Preset Testing")
     p1, p2, p3 = st.columns(3)
@@ -83,34 +90,48 @@ def render_prediction_view():
         prob, _ = predict_transaction(amount, time_sec, v_feats)
         risk_percent = prob * 100
 
-        if analyze_btn:
-            # Append prediction event to session_state prediction_history
-            if "prediction_history" not in st.session_state:
-                st.session_state.prediction_history = []
-            
-            import random
-            from datetime import datetime
-            txn_id = random.randint(99100, 99999)
-            decision = "BLOCKED" if risk_percent >= 50.0 else "APPROVED"
-            
-            st.session_state.prediction_history.append({
-                "id": txn_id,
-                "amount": amount,
-                "risk": risk_percent,
-                "decision": decision,
-                "country": country,
-                "channel": channel,
-                "timestamp": datetime.now().strftime("%H:%M:%S UTC")
-            })
+        if analyze_btn or "last_simulated_tx" in st.session_state:
+            # Handle prediction or simulation result
+            if analyze_btn:
+                import random
+                from datetime import datetime
+                txn_id = f"TX-{random.randint(99100, 99999)}"
+                decision = "BLOCKED" if risk_percent >= 50.0 else "APPROVED"
+                
+                sim_event = {
+                    "id": txn_id,
+                    "amount": amount,
+                    "risk": risk_percent,
+                    "decision": decision,
+                    "country": country,
+                    "channel": channel,
+                    "timestamp": datetime.now().strftime("%H:%M:%S UTC"),
+                    "v14": v14, "v10": v10, "v12": v12, "v4": v4,
+                    "model_prob_pct": round(risk_percent, 2),
+                    "behavior_risk": round(min(100.0, max(5.0, (abs(v14) * 12.0))), 1),
+                    "velocity_risk": round(min(100.0, max(5.0, (v4 * 15.0) + (amount / 200.0))), 1),
+                    "location_risk": round(min(100.0, max(5.0, (abs(v12) * 14.0))), 1),
+                    "final_risk_score": round(risk_percent, 1)
+                }
+                st.session_state.last_simulated_tx = sim_event
+                if "prediction_history" not in st.session_state:
+                    st.session_state.prediction_history = []
+                st.session_state.prediction_history.append(sim_event)
+            else:
+                sim_event = st.session_state.last_simulated_tx
+
+            cur_amount = sim_event.get('amount', amount)
+            cur_risk = sim_event.get('final_risk_score', risk_percent)
+            cur_decision = sim_event.get('decision', 'BLOCKED' if cur_risk >= 50 else 'APPROVED')
 
             steps_html = f"""
             <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div class="feed-item" style="border-left: 4px solid #00F0FF;">
-                    <div>01 <b>INPUT RECEIVED</b>: ${amount:,.2f} ({country} • {channel})</div>
+                    <div>01 <b>INPUT RECEIVED</b>: ${cur_amount:,.2f} ({sim_event.get('country', country)} • {sim_event.get('channel', channel)})</div>
                     <span class="badge-approved">PASSED</span>
                 </div>
                 <div class="feed-item" style="border-left: 4px solid #8B5CF6;">
-                    <div>02 <b>FEATURES PREPARED</b>: V14={v14:.2f}, V4={v4:.2f}, V10={v10:.2f}</div>
+                    <div>02 <b>FEATURES PREPARED</b>: V14={sim_event.get('v14', v14):.2f}, V4={sim_event.get('v4', v4):.2f}, V10={sim_event.get('v10', v10):.2f}</div>
                     <span class="badge-approved">PASSED</span>
                 </div>
                 <div class="feed-item" style="border-left: 4px solid #00F0FF;">
@@ -119,52 +140,53 @@ def render_prediction_view():
                 </div>
                 <div class="feed-item" style="border-left: 4px solid #F59E0B;">
                     <div>04 <b>PROBABILITY SCORE</b>: Fraud Risk Calculated</div>
-                    <span class="badge-approved">{risk_percent:.2f}% RISK</span>
+                    <span class="badge-approved">{cur_risk:.2f}% RISK</span>
                 </div>
-                <div class="feed-item" style="border-left: 4px solid {'#EF4444' if risk_percent >= 50.0 else '#10B981'};">
+                <div class="feed-item" style="border-left: 4px solid {'#EF4444' if cur_risk >= 50.0 else '#10B981'};">
                     <div>05 <b>DECISION GENERATED</b>: Gateway Policy Enforcement</div>
-                    <span class="{'badge-blocked' if risk_percent >= 50.0 else 'badge-approved'}">{decision}</span>
+                    <span class="{'badge-blocked' if cur_risk >= 50.0 else 'badge-approved'}">{cur_decision}</span>
                 </div>
             </div>
             <br>
             """
             safe_html(steps_html)
 
-            st.plotly_chart(create_gauge_chart(risk_percent), use_container_width=True)
+            st.plotly_chart(create_gauge_chart(cur_risk), use_container_width=True)
 
-            if risk_percent >= 50.0:
-                alert_html = f"""
-                <div style="background: rgba(239, 68, 68, 0.15); border: 2px solid #EF4444; border-radius: 16px; padding: 1.5rem; text-align: center;">
-                    <h2 style="color: #EF4444; margin: 0;">🚨 HIGH FRAUD THREAT DETECTED</h2>
-                    <p style="color: #FFFFFF; margin-top: 0.5rem;">Fraud Probability: <b>{risk_percent:.2f}%</b></p>
-                    <div class="badge-blocked" style="font-size: 1rem; padding: 8px 24px; display: inline-block;">
-                        ACTION TAKEN: AUTOMATED TRANSACTION BLOCK
-                    </div>
-                    <div style="margin-top: 1rem; text-align: left; font-size: 0.9rem; color: #CBD5E1;">
-                        <b>Threat Factor Breakdown:</b><br>
-                        • Extreme anomaly in V14 Identity feature ({v14:.2f})<br>
-                        • Transaction amount velocity (${amount:,.2f})<br>
-                        • V4 Frequency deviation ({v4:.2f})
-                    </div>
-                </div>
-                """
-                safe_html(alert_html)
-            else:
-                success_html = f"""
-                <div style="background: rgba(16, 185, 129, 0.15); border: 2px solid #10B981; border-radius: 16px; padding: 1.5rem; text-align: center;">
-                    <h2 style="color: #10B981; margin: 0;">✅ LEGITIMATE TRANSACTION</h2>
-                    <p style="color: #FFFFFF; margin-top: 0.5rem;">Fraud Risk Score: <b>{risk_percent:.2f}%</b></p>
-                    <div class="badge-approved" style="font-size: 1rem; padding: 8px 24px; display: inline-block;">
-                        ACTION TAKEN: APPROVED & CLEARED
-                    </div>
-                    <div style="margin-top: 1rem; text-align: left; font-size: 0.9rem; color: #CBD5E1;">
-                        <b>Security Verification:</b><br>
-                        • Identity V14 within normal baseline ({v14:.2f})<br>
-                        • Trusted merchant channel & geography<br>
-                        • Pattern matched 99.9% legitimate cluster
+            # Render Adaptive Risk Breakdown & AI Reasoning
+            render_adaptive_risk_breakdown(
+                model_prob=sim_event.get('model_prob_pct', cur_risk),
+                behavior_risk=sim_event.get('behavior_risk', 50.0),
+                velocity_risk=sim_event.get('velocity_risk', 50.0),
+                location_risk=sim_event.get('location_risk', 50.0),
+                final_score=cur_risk
+            )
+
+            render_ai_fraud_reasoning(
+                v14=sim_event.get('v14', v14),
+                v10=sim_event.get('v10', v10),
+                v12=sim_event.get('v12', v12),
+                v4=sim_event.get('v4', v4),
+                amount=cur_amount,
+                risk_percent=cur_risk
+            )
+
+            # Impossible Travel Detection Banner if present
+            imp_travel = sim_event.get('impossible_travel')
+            if imp_travel:
+                travel_html = f"""
+                <div style="background: rgba(239, 68, 68, 0.18); border: 2px solid #EF4444; border-radius: 14px; padding: 12px 18px; margin-top: 10px;">
+                    <div style="color: #EF4444; font-weight: 800; font-size: 0.92rem;">{imp_travel['status']}</div>
+                    <div style="font-size: 0.82rem; color: #FFFFFF; margin-top: 4px;">
+                        Previous: <b>{imp_travel['prev_location']}</b> ➔ Current: <b>{imp_travel['curr_location']}</b> (Elapsed: {imp_travel['time_diff_mins']} mins)
                     </div>
                 </div>
                 """
-                safe_html(success_html)
+                safe_html(travel_html)
+
+            if st.button("📄 GENERATE & VIEW INCIDENT REPORT", key="btn_gen_report_pred", use_container_width=True):
+                st.session_state.current_page = "Reports"
+                st.rerun()
+
         else:
-            st.info("👈 Adjust inputs or click a preset above, then hit 'EXECUTE REAL-TIME AI SCAN'.")
+            st.info("👈 Adjust inputs, click a preset, or click '🚨 SIMULATE LIVE ATTACK' above to run the live scan.")

@@ -34,6 +34,26 @@ def render_dashboard_view():
     with c4:
         safe_html(f'<div class="aegis-metric-card"><div class="metric-title">Test F1-Score</div><div class="metric-value">{m_stats["test_f1"]:.2f}%</div><div class="metric-delta delta-positive">Optimal Balance</div></div>')
 
+    from components.soc_intelligence import (
+        render_attack_simulator_bar,
+        render_global_attack_map,
+        render_fraud_network_graph,
+        render_model_health_monitor
+    )
+
+    # Render Real-Time Attack Simulator Control Bar
+    render_attack_simulator_bar()
+
+    # Render Model Health & Drift Monitor
+    render_model_health_monitor()
+
+    # Global Attack Map & Fraud Ring Detection Network
+    g1, g2 = st.columns([1.1, 0.9])
+    with g1:
+        render_global_attack_map()
+    with g2:
+        render_fraud_network_graph()
+
     st.markdown("<br>", unsafe_allow_html=True)
 
     # Academic Confusion Matrix Decomposition & Curves
