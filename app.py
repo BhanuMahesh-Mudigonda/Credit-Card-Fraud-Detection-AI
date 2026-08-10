@@ -32,13 +32,33 @@ from views.explain_ai_view import render_explain_ai_view
 from views.dashboard_view import render_dashboard_view
 from views.reports_view import render_reports_view
 from views.about_view import render_about_view
-from components.intro_animation import render_intro_animation
 from components.copilot import render_copilot_quick_button
+from components.footer import footer
 
-# 5. Render Sticky Glass Top Navigation Bar
+# 5. Native Streamlit Multipage Navigation Definition
+home_page = st.Page(render_home_view, title="Home", icon="🏠", default=True)
+dataset_page = st.Page(render_dataset_view, title="Dataset", icon="📊")
+prediction_page = st.Page(render_prediction_view, title="Prediction", icon="🤖")
+performance_page = st.Page(render_performance_view, title="Performance", icon="📈")
+explain_page = st.Page(render_explain_ai_view, title="Explain AI", icon="🧠")
+dashboard_page = st.Page(render_dashboard_view, title="Dashboard", icon="📡")
+reports_page = st.Page(render_reports_view, title="Reports", icon="📄")
+about_page = st.Page(render_about_view, title="About", icon="ℹ️")
+
+pages_map = {
+    "Home": home_page,
+    "Dataset": dataset_page,
+    "Prediction": prediction_page,
+    "Performance": performance_page,
+    "Explain AI": explain_page,
+    "Dashboard": dashboard_page,
+    "Reports": reports_page,
+    "About": about_page
+}
+
+# 6. Render Sticky Glass Top Navigation Bar
 render_top_navbar()
 
-# 6. Route to Active Page View (Instantaneous Rendering)
 current_page = st.session_state.get("current_page", "Home")
 last_page = st.session_state.get("_last_rendered_page", None)
 page_changed = (current_page != last_page)
@@ -46,33 +66,15 @@ page_changed = (current_page != last_page)
 if page_changed:
     st.session_state["_last_rendered_page"] = current_page
 
-# Render target page FIRST
-if current_page == "Home":
-    render_home_view()
-elif current_page == "Dataset":
-    render_dataset_view()
-elif current_page == "Prediction":
-    render_prediction_view()
-elif current_page == "Performance":
-    render_performance_view()
-elif current_page == "Explain AI":
-    render_explain_ai_view()
-elif current_page == "Dashboard":
-    render_dashboard_view()
-elif current_page == "Reports":
-    render_reports_view()
-elif current_page == "About":
-    render_about_view()
-else:
-    render_home_view()
+# Native Page Execution via Streamlit Navigation Engine
+active_page = pages_map.get(current_page, home_page)
+pg = st.navigation([active_page], position="hidden")
+pg.run()
 
-# Execute scroll reset ONLY AFTER target page content has rendered
+# Instantaneous Scroll Reset on Navigation
 if page_changed:
     reset_scroll_to_top(force=True)
 
-# 7. Render Floating Copilot Quick Trigger Button on all pages
+# 7. Render Floating Copilot Quick Trigger Button & Footer
 render_copilot_quick_button()
-
-# 8. Render Footer with Quick Bottom Navigation Console
-from components.footer import footer
 footer()
