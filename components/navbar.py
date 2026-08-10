@@ -50,25 +50,41 @@ def render_top_navbar():
 
     scroll_script = """
     <script>
-        try {
-            var doc = window.parent.document;
-            if (window.parent.location.hash) {
-                window.parent.history.replaceState(null, "", window.parent.location.pathname);
+        (function resetAegisScroll() {
+            try {
+                var doc = (window.parent && window.parent.document) ? window.parent.document : document;
+                if (window.parent && window.parent.location && window.parent.location.hash) {
+                    window.parent.history.replaceState(null, "", window.parent.location.pathname);
+                }
+                if (window.location && window.location.hash) {
+                    window.history.replaceState(null, "", window.location.pathname);
+                }
+                var targets = [
+                    doc.querySelector('.main'),
+                    doc.querySelector('section.main'),
+                    doc.querySelector('.block-container'),
+                    doc.querySelector('.stApp'),
+                    doc.documentElement,
+                    doc.body
+                ];
+                targets.forEach(function(el) {
+                    if (el) {
+                        el.scrollTop = 0;
+                        if (typeof el.scrollTo === 'function') {
+                            el.scrollTo({top: 0, left: 0, behavior: 'instant'});
+                        }
+                    }
+                });
+                if (window.parent && typeof window.parent.scrollTo === 'function') {
+                    window.parent.scrollTo(0, 0);
+                }
+                if (typeof window.scrollTo === 'function') {
+                    window.scrollTo(0, 0);
+                }
+            } catch (e) {
+                console.log("AEGIS Instant Scroll Top:", e);
             }
-            var targets = [
-                doc.querySelector('.main'),
-                doc.querySelector('section.main'),
-                doc.querySelector('.block-container'),
-                doc.documentElement,
-                doc.body
-            ];
-            targets.forEach(function(el) {
-                if (el) { el.scrollTop = 0; }
-            });
-            window.parent.scrollTo(0, 0);
-        } catch (e) {
-            console.log("Smooth Scroll Top:", e);
-        }
+        })();
     </script>
     """
     safe_html(scroll_script)
