@@ -21,7 +21,7 @@ def footer():
     with c_prev:
         if has_prev and prev_page:
             if st.button(f"← PREV: {prev_page}", key="footer_prev_btn", type="secondary", use_container_width=True):
-                st.session_state.current_page = prev_page
+                st.query_params["page"] = prev_page
                 st.rerun()
 
     with c_center:
@@ -38,7 +38,7 @@ def footer():
     with c_next:
         next_label = f"NEXT: {next_page} →" if has_next else f"🔄 START OVER: {next_page}"
         if st.button(next_label, key="footer_next_btn", type="primary", use_container_width=True):
-            st.session_state.current_page = next_page
+            st.query_params["page"] = next_page
             st.rerun()
 
     st.markdown(

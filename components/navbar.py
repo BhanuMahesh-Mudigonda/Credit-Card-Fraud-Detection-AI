@@ -55,5 +55,5 @@ def render_top_navbar():
             btn_label = f"{icon} {item}"
             btn_type = "primary" if is_active else "secondary"
             if st.button(btn_label, key=f"nav_btn_{item}", type=btn_type, use_container_width=True):
-                st.session_state.current_page = item
+                st.query_params["page"] = item
                 st.rerun()

@@ -22,19 +22,17 @@ def load_css():
         st.html(f"<style>\n{css_content}\n</style>")
 
 def reset_scroll_to_top(force=False):
-    """Single source of truth: Instantly resets [data-testid="stAppViewContainer"] and document viewport to top (0,0)."""
+    """Guarantees target page opens at absolute top (0,0) matching Image 2 without jerk."""
     if not force:
         return
 
     scroll_js = """
-    <div id="aegis-page-top" style="position: absolute; top: 0; left: 0; height: 1px; width: 1px; pointer-events: none;"></div>
     <script>
-    (function enforceScrollTop() {
+    (function resetToTopNow() {
         try {
             var doc = (window.parent && window.parent.document) ? window.parent.document : document;
             var win = window.parent || window;
             
-            // Disable browser automatic scroll restoration
             if ('scrollRestoration' in win.history) {
                 win.history.scrollRestoration = 'manual';
             }
@@ -42,13 +40,11 @@ def reset_scroll_to_top(force=False):
                 window.history.scrollRestoration = 'manual';
             }
 
-            if (win.location && win.location.hash) {
-                win.history.replaceState(null, "", win.location.pathname);
-            }
-
-            function setScrollZero() {
-                // Primary Target: Streamlit's actual scrolling container
-                var appView = doc.querySelector('[data-testid="stAppViewContainer"]');
+            function setTop() {
+                var appView = doc.querySelector('[data-testid="stAppViewContainer"]') || 
+                               doc.querySelector('section.main') || 
+                               doc.documentElement || 
+                               doc.body;
                 if (appView) {
                     appView.scrollTop = 0;
                     appView.scrollLeft = 0;
@@ -56,41 +52,17 @@ def reset_scroll_to_top(force=False):
                         appView.scrollTo({top: 0, left: 0, behavior: 'instant'});
                     }
                 }
-
-                // Secondary & Viewport Targets (Iterate all without short-circuiting)
-                var targets = [
-                    doc.querySelector('section.main'),
-                    doc.querySelector('.main'),
-                    doc.querySelector('[data-testid="stMain"]'),
-                    doc.querySelector('.block-container'),
-                    doc.documentElement,
-                    doc.body
-                ];
-
-                targets.forEach(function(el) {
-                    if (el) {
-                        el.scrollTop = 0;
-                        el.scrollLeft = 0;
-                        if (typeof el.scrollTo === 'function') {
-                            el.scrollTo({top: 0, left: 0, behavior: 'instant'});
-                        }
-                    }
-                });
-
                 if (typeof win.scrollTo === 'function') {
                     win.scrollTo({top: 0, left: 0, behavior: 'instant'});
                 }
-                if (typeof window.scrollTo === 'function') {
-                    window.scrollTo({top: 0, left: 0, behavior: 'instant'});
-                }
             }
 
-            // Execute instant scroll reset synchronized with browser paint
-            win.requestAnimationFrame(function() {
-                setScrollZero();
-            });
+            setTop();
+            setTimeout(setTop, 10);
+            setTimeout(setTop, 50);
+            setTimeout(setTop, 100);
         } catch (e) {
-            console.log("AEGIS Instant Scroll Reset:", e);
+            console.log("AEGIS Scroll Reset:", e);
         }
     })();
     </script>
