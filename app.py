@@ -8,11 +8,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Inject Custom Cyber SOC CSS
-from utils.theme import load_css
+# 2. Inject Custom Cyber SOC CSS & Scroll Reset
+from utils.theme import load_css, reset_scroll_to_top
 load_css()
-
-
+reset_scroll_to_top()
 
 # 3. Render 8-Layer Animated Ambient Cyber Background & Fast Activation
 from components.background import render_ambient_background

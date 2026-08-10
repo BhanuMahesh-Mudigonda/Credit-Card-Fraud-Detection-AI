@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.theme import safe_html
+from utils.theme import safe_html, reset_scroll_to_top
 from utils.dataset_loader import get_dataset_summary
 from utils.model_loader import get_model_validation_metrics
 
@@ -164,10 +164,12 @@ def render_landing_hero():
             with b1:
                 if st.button("🚀 Start Live Monitoring", key="hero_btn_mon", type="primary", use_container_width=True):
                     st.session_state.current_page = "Dashboard"
+                    reset_scroll_to_top()
                     st.rerun()
             with b2:
                 if st.button("📡 Live SOC Radar", key="hero_btn_radar", type="secondary", use_container_width=True):
                     st.session_state.current_page = "Dashboard"
+                    reset_scroll_to_top()
                     st.rerun()
         with c2:
             safe_html(hero_right_html)

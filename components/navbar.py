@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import datetime
-from utils.theme import safe_html
+from utils.theme import safe_html, reset_scroll_to_top
 
 NAV_ITEMS = [
     ("Home", "🏠"),
@@ -48,46 +48,7 @@ def render_top_navbar():
     """
     safe_html(navbar_html)
 
-    scroll_script = """
-    <script>
-        (function resetAegisScroll() {
-            try {
-                var doc = (window.parent && window.parent.document) ? window.parent.document : document;
-                if (window.parent && window.parent.location && window.parent.location.hash) {
-                    window.parent.history.replaceState(null, "", window.parent.location.pathname);
-                }
-                if (window.location && window.location.hash) {
-                    window.history.replaceState(null, "", window.location.pathname);
-                }
-                var targets = [
-                    doc.querySelector('.main'),
-                    doc.querySelector('section.main'),
-                    doc.querySelector('.block-container'),
-                    doc.querySelector('.stApp'),
-                    doc.documentElement,
-                    doc.body
-                ];
-                targets.forEach(function(el) {
-                    if (el) {
-                        el.scrollTop = 0;
-                        if (typeof el.scrollTo === 'function') {
-                            el.scrollTo({top: 0, left: 0, behavior: 'instant'});
-                        }
-                    }
-                });
-                if (window.parent && typeof window.parent.scrollTo === 'function') {
-                    window.parent.scrollTo(0, 0);
-                }
-                if (typeof window.scrollTo === 'function') {
-                    window.scrollTo(0, 0);
-                }
-            } catch (e) {
-                console.log("AEGIS Instant Scroll Top:", e);
-            }
-        })();
-    </script>
-    """
-    safe_html(scroll_script)
+    reset_scroll_to_top()
 
     cols = st.columns(len(NAV_ITEMS))
     for idx, (item, icon) in enumerate(NAV_ITEMS):
@@ -97,4 +58,5 @@ def render_top_navbar():
             btn_type = "primary" if is_active else "secondary"
             if st.button(btn_label, key=f"nav_btn_{item}", type=btn_type, use_container_width=True):
                 st.session_state.current_page = item
+                reset_scroll_to_top()
                 st.rerun()
